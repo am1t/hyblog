@@ -19,7 +19,7 @@ $auth = file_get_contents($target_dir . '/session.php');
 <html lang="en-GB">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>hyblog — about</title>
+	<title><?php echo NAME; ?> - about</title>
 	<meta name="description" content="<?php echo constant('DESCRIPTION'); ?>">
     <link rel="icon" type="image/png" href="<?php echo AVATAR; ?>">
 	<link defer rel="stylesheet" href="../style_min.css" type="text/css" media="all">
