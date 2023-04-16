@@ -12,6 +12,7 @@ require_once('config.php');
 require_once('content_filters.php');
 require_once('Parsedown.php');
 require_once('ParsedownExtra.php');
+require_once('functions.php');
 
 $target_dir = dirname(__FILE__); //$_SERVER['DOCUMENT_ROOT']
 
@@ -191,7 +192,7 @@ if (isset($posts)) {
 				$has='';
 			}
 			
-			echo '<a id="toggleComments'.$p.'" onclick="toggleComments('.$p.')" class="toggleComments"><picture class="commenticonpicture"><source srcset="/images/'.$has.'commentdark.png" media="(prefers-color-scheme: dark)"><img class="commenticon" src="/images/'.$has.'comment.png"></picture></a>';
+			echo '<a id="toggleComments'.$p.'" onclick="toggleComments('.$p.')" class="toggleComments"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="env rss bi bi-envelope" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"></path></svg></a>';
 			echo '<a style="text-decoration: none;" href="#p' . $p . '" onclick="toggleComments('.$p.')">';
 			
 			if (isset($post_title)) {
@@ -203,40 +204,26 @@ if (isset($posts)) {
 			echo '</div>';
 			echo '</article>';
 			echo '<div class="replies" id="replies'.$p.'" style="display: none;">';
-			echo '<h3>Comments</h3>';
+			echo '<h3>Interact</h3>';
 			echo '<div id="comment'.$p.'">';
 			
-			if ( file_exists( $target_dir.'/posts/'.$year.'/'.$month.'/comments'.$p.'-'.$date.'.md' ) ) {				
-				$comments = file_get_contents($target_dir.'/posts/'.$year.'/'.$month.'/comments'.$p.'-'.$date.'.md');
-				$explode = preg_split('/@@/', $comments, -1, PREG_SPLIT_NO_EMPTY);
-				foreach ($explode as $i=>$comment) {
-					$parts = explode('<@>',$comment);
-					if ($parts[1] == '') {
-						echo '<div style="text-indent: 20px; margin-bottom: -10px;"><b>'.$parts[0].'</b> says:</div>';
-					} else {
-						echo '<div style="text-indent: 20px; margin-bottom: -10px;"><a class="website_link" href="'.$parts[1].'"><b>'.$parts[0].'</b></a> says:</div>';
-					}
-					if (isset($_SESSION['hauth']) && $_SESSION['hauth'] == $auth) {
-					
-					echo '<img hx-target="#replies'.$p.'" hx-get="delcomment.php?c='.$i.'&date='.$date.'&p='.$p.'" hx-confirm="Are you sure?" title="Delete comment" src="../images/red-cross.png" style="width: 16px; float: right; cursor: pointer;">';
-					
-					}
-					$Parsedown = new Parsedown();
-					$parts[2] = $Parsedown->text($parts[2]);
-					echo '<div style="text-indent: 20px; margin-bottom: 25px;">'.$parts[2].'</div>';
-				}
-			}
+			// build a custom mailto:link
+                
+			$subjecttitle = '';
+			$postlink = '';
+			$postlink = BASE_URL . '?date=' . $date . '#p' . $p;
 			
-			echo '<br><form id="form'.$p.'" hx-target="#comment'.$p.'" hx-post="comment.php">';
-			echo '<input type="hidden" name="date" value="'.$date.'" />';
-			echo '<input type="hidden" name="post" value="'.$p.'" />';
-			echo '<input type="hidden" name="email" value="" />';
-			echo '<input type="text" name="name" size="30" autocomplete="off" id="name'.$p.'" required class="commentInput" style="font-family: Helvetica, Arial, sans-serif; font-size: 15px; margin-bottom: 10px; padding: 5px 7px; color: #777; border: 1px solid #ccc; border-radius: 5px;" placeholder="Name" />';
-			echo '</br>';
-			echo '<input type="url" name="website" size="30" style="font-family: Helvetica, Arial, sans-serif; font-size: 15px; margin-bottom: 10px; padding: 5px 7px; color: #777; border: 1px solid #ccc; border-radius: 5px;" placeholder="Website" />';
-			echo '<textarea rows="3" name="comment" required class="comment_text commentInput" style="color: #777; border: 1px solid #ccc; border-radius: 5px; font-family: Helvetica, Arial, sans-serif; font-size: 15px; margin-bottom: 5px; padding: 6px 7px;" placeholder="Comment ..."></textarea>';
-			echo '<input style="float: right; margin-right: 15px;" type="submit" value="comment"/>';
-			echo '</form>';
+			if (!empty($post_title)) {
+				$subjecttitle = $post_title;
+			} else {
+				$subjecttitle = $postlink;
+			}
+
+			$email = MAILTO;
+			$subject = 'COMMENT: ' . $subjecttitle;
+			$body = 'Hi, I was reading through your post (' . $postlink . ') and wanted to send a quick note to say...';
+			$link = encode_email_link($email, $subject, $body);
+			echo "<p>Have something you'd like to say about what I've written? &#128227</p><p>Great! <a href=\"$link\">Send me a note via email</a> and let's start a conversation on this very topic.</p>";
 			echo '</div>';
 			echo '</div>';
 		}
@@ -272,7 +259,7 @@ if (isset($posts)) {
 				do {
 				    foreach($filedate as $file) {
 						if ($prev_check == $file) {
-							echo "<div class='nav-previous'><a href='".BASE_URL."?date=$prev_check'>&lt;&lt;</a></div>";
+							echo "<div class='nav-previous'><a href='".BASE_URL."?date=$prev_check'><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='currentColor' class='bi bi-arrow-left-circle' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z'></path></svg></a></div>";
 							$match = true;
 						}
 				    }
@@ -290,7 +277,7 @@ if (isset($posts)) {
 					    } else {
 					        $next = '?date='.$next_check;
 					    }
-						echo "<div class='nav-next'><a href='".BASE_URL."$next'>&gt;&gt;</a></div>";
+						echo "<div class='nav-next'><a href='".BASE_URL."$next'><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='currentColor' class='bi bi-arrow-right-circle' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z'></path></svg></a></div>";
 							$match = true;
 					}
 				}
