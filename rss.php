@@ -23,17 +23,18 @@ if ( file_exists( $rss ) ) {
 $rssfile = fopen($rss, 'w');
 
 fwrite($rssfile, '<?xml version="1.0" standalone="yes" ?>'.PHP_EOL);
+fwrite($rssfile, '<?xml-stylesheet href="/rss.xsl" type="text/xsl" ?>'.PHP_EOL);
 fwrite($rssfile, '<rss xmlns:source="http://source.scripting.com/"'.PHP_EOL);
 fwrite($rssfile, 'xmlns:now="https://nowns.work" version="2.0"'.PHP_EOL);
 fwrite($rssfile, '>'.PHP_EOL);
 fwrite($rssfile, '<channel>'.PHP_EOL);
-fwrite($rssfile, '<title><?php echo NAME;?></title>'.PHP_EOL);
-fwrite($rssfile, '<description>Posts from <?php echo NAME;?></description>'.PHP_EOL);
+fwrite($rssfile, '<title>'.NAME.'</title>'.PHP_EOL);
+fwrite($rssfile, '<description>'.NAME.' Entries Feed</description>'.PHP_EOL);
 fwrite($rssfile, '<link>'.BASE_URL.'</link>'.PHP_EOL);
 fwrite($rssfile, '<lastBuildDate>' . gmdate('D, d M Y H:i:s') . ' GMT</lastBuildDate>'.PHP_EOL);
 fwrite($rssfile, '<cloud domain="rpc.rsscloud.io" port="5337" path="/pleaseNotify" registerProcedure="" protocol="http-post"/>'.PHP_EOL);
 fwrite($rssfile, '<generator>hyblog</generator>'.PHP_EOL);
-fwrite($rssfile, '<source:account service="hyblog"><?php echo NAME;?></source:account>'.PHP_EOL);
+fwrite($rssfile, '<source:account service="hyblog">'.NAME.'</source:account>'.PHP_EOL);
 fwrite($rssfile, '<language>en-GB</language>'.PHP_EOL);
 
 if (!isset($_GET['p']) || (isset($_GET['p'])&& $_GET['p'] != 'clearnow')) {
