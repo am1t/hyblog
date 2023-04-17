@@ -1,5 +1,10 @@
 /* Base */
 
+@font-face { font-family: 'Open Sans'; src: url('fonts/OpenSans-Regular.ttf'); } 
+@font-face { font-family: 'Open Sans'; font-style: italic; src: url('fonts/OpenSans-Italic.ttf'); } 
+@font-face { font-family: 'Open Sans'; font-weight: bold; src: url('fonts/OpenSans-Bold.ttf');}
+@font-face { font-family: 'Open Sans'; font-weight: bold; font-style: italic; src: url('fonts/OpenSans-BoldItalic.ttf');}
+
 hr {
     border: none;
     overflow: visible;
@@ -43,14 +48,14 @@ body {
 	margin: 0 auto;
 	padding: 0;
 	font-size: 16px;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 	color: var(--grey-3);
 	max-width: 660px;
 }
 
 h1, h2, h3, h4, h5, h6 {
 	clear: both;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	margin-block-end: 10px;
 }
@@ -358,8 +363,8 @@ body.login {
 .site-title {
 	line-height: 1.2;
 	margin: 0 auto;
-	font-size: 34px;
-    letter-spacing: -2.5px;
+	font-size: 40px;
+    letter-spacing: -1.0px;
 }
 
 .site-title a {
@@ -1183,7 +1188,7 @@ object.avatar {
 	}
 
 	.entry-content, .entry-content p, .replyto {
-		font-size: 18px !important;
+		font-size: 16px !important;
 		line-height: 26px;
 	}
 
