@@ -598,19 +598,16 @@ blockquote p:first-of-type {
 	margin-block-start: 0px !important;
 }
 
+
 blockquote {
-	border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border: 1px solid #999 !important;
-	overflow: hidden;
-	position: relative;
-	left: -18px;
-	background: #fcfcfc;
-	color: var(--grey-5);
-	font-style: italic;
-	font-weight: 300;
-	margin: 1em 0 1em 35px;
-	padding: 16px;
+    border-left: 2px solid #999 !important;
+    overflow: hidden;
+    position: relative;
+    color: var(--grey-5);
+    font-style: italic;
+    font-weight: 300;
+    margin: 1em 0;
+    padding: 16px;
 }
 
 .avatar_post {
@@ -1159,6 +1156,7 @@ object.avatar {
     	text-align: left;
     	font-size: 28px;
     	letter-spacing: -2.5px;
+		text-transform: lowercase;
     }
     
     #page {

@@ -220,10 +220,10 @@ if (isset($posts)) {
 			}
 
 			$email = MAILTO;
-			$subject = 'COMMENT: ' . $subjecttitle;
-			$body = 'Hi, I was reading through your post (' . $postlink . ') and wanted to send a quick note to say...';
+			$subject = 'Comment: ' . $subjecttitle;
+			$body = 'Hi, I was reading through your post (' . $postlink . ') and wanted to send a quick note.';
 			$link = encode_email_link($email, $subject, $body);
-			echo "<p>Have something you'd like to say about what I've written? &#128227</p><p>Great! <a href=\"$link\">Send me a note via email</a> and let's start a conversation on this very topic.</p>";
+			echo "<p>Have something you'd like to respond with? &#128227. <a href=\"$link\">Send me a note via email</a> and let's start a conversation on this very topic.</p>";
 			echo '</div>';
 			echo '</div>';
 		}

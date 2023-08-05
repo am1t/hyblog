@@ -22,13 +22,14 @@ $rssfile = fopen($rss, 'w');
 fwrite($rssfile, '<?xml version="1.0" standalone="yes" ?>'.PHP_EOL);
 fwrite($rssfile, '<?xml-stylesheet href="/rss.xsl" type="text/xsl"?>'.PHP_EOL);
 fwrite($rssfile, '<rss version="2.0"'.PHP_EOL);
-fwrite($rssfile, '>'.PHP_EOL);
+fwrite($rssfile, 'xmlns:atom="http://www.w3.org/2005/Atom">'.PHP_EOL);
 fwrite($rssfile, '<channel>'.PHP_EOL);
 fwrite($rssfile, '<title>'.NAME.'</title>'.PHP_EOL);
 fwrite($rssfile, '<description>'.NAME.' Daily Digest</description>'.PHP_EOL);
 fwrite($rssfile, '<link>'.BASE_URL.'</link>'.PHP_EOL);
-fwrite($rssfile, '<lastBuildDate>' . gmdate('D, d M Y H:i:s') . ' GMT</lastBuildDate>'.PHP_EOL);
+fwrite($rssfile, '<lastBuildDate>' . gmdate('D, d M Y H:i:s') . ' +0530</lastBuildDate>'.PHP_EOL);
 fwrite($rssfile, '<cloud domain="rpc.rsscloud.io" port="5337" path="/pleaseNotify" registerProcedure="" protocol="http-post"/>'.PHP_EOL);
+fwrite($rssfile, '<atom:link href="' .BASE_URL. 'daily.xml" rel="self" type="application/rss+xml" />'.PHP_EOL);
 fwrite($rssfile, '<generator>hyblog</generator>'.PHP_EOL);
 fwrite($rssfile, '<language>en-GB</language>'.PHP_EOL);
 
@@ -87,16 +88,21 @@ foreach($filedates as $file) {
 		$content = trim($post_parts[0]);
 		$content = filters($content);
 		$Parsedown = new ParsedownExtra();
-		$content = $Parsedown->text($content);
+		$feedcontent = $Parsedown->text($content);
+		$feedcontent = substr($feedcontent, 3);
+		if (substr($feedcontent, -4) == '</p>') {
+			$feedcontent = substr($feedcontent, 0, -4);
+		}
 		
-		if ($title_in_body === true && $post_title != '') {
+		if ($post_title != '') {
 			$h2 = '<span style="font-size: 24px; text-transform: uppercase;"><strong>' . $post_title . '</strong></span></br>';
 		}
 		
 		// add post to day
 		
 		if (!$draft) {
-			$fullcontent .= '<a href="' . BASE_URL . '/?date=' . $file . '#p' . $i . '" style="text-decoration: none; float: left; margin-right: 8px;">#</a>'. $h2 . $content;
+			$feedcontent = '<p><a href="' . BASE_URL . '?date=' . $file . '#p' . $i . '" style="text-decoration: none; float: left; margin-right: 8px;">#</a> ' . $h2 . $feedcontent . '</p>'.PHP_EOL;
+			$fullcontent .= $feedcontent;
 		}
 	}
 		
@@ -106,8 +112,9 @@ foreach($filedates as $file) {
 	
 	fwrite($rssfile, '<link>'.BASE_URL.'?date='.$file.'</link>'.PHP_EOL);
     fwrite($rssfile, '<guid isPermaLink="false">'.BASE_URL.'?date='.$file.'</guid>'.PHP_EOL);
-	fwrite($rssfile, '<title>Posts for ' . date("d/m/Y", strtotime($file)) . '</title>'.PHP_EOL);
+	fwrite($rssfile, '<title>Notes from ' . date("D, d M Y", strtotime($file)) . '</title>'.PHP_EOL);
 	fwrite($rssfile, '<description><![CDATA['.$fullcontent.']]></description>'.PHP_EOL);
+	fwrite($rssfile, '<pubDate>' . date('D, d M Y H:i:s', strtotime('+1 day',strtotime($file))) . ' +0530</pubDate>'.PHP_EOL);
 	fwrite($rssfile, '</item>'.PHP_EOL);
 
 }
